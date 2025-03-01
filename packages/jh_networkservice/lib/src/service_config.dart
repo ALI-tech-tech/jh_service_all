@@ -21,15 +21,16 @@ class NetworkConfig {
   final int maxRedirects;
   final bool persistentConnection;
   final FutureOr<List<int>> Function(String, RequestOptions)? requestEncoder;
-  final FutureOr<String?> Function(List<int>, RequestOptions, ResponseBody)? responseDecoder;
+  final FutureOr<String?> Function(List<int>, RequestOptions, ResponseBody)?
+      responseDecoder;
   final ListFormat? listFormat;
 
   NetworkConfig({
     required this.baseUrl,
     this.method,
-    this.connectTimeout =const Duration(milliseconds: 5000),
-    this.receiveTimeout =const Duration(milliseconds: 3000),
-    this.sendTimeout =kIsWeb ? null :const Duration(milliseconds: 3000),
+    this.connectTimeout = const Duration(milliseconds: 5000),
+    this.receiveTimeout = const Duration(milliseconds: 3000),
+    this.sendTimeout = kIsWeb ? null : const Duration(milliseconds: 3000),
     this.defaultHeaders,
     this.queryParameters,
     this.extra,
@@ -45,7 +46,6 @@ class NetworkConfig {
     this.responseDecoder,
     this.listFormat,
   });
-
 
   BaseOptions toBaseOptions() {
     return BaseOptions(
@@ -71,5 +71,3 @@ class NetworkConfig {
     );
   }
 }
-
-

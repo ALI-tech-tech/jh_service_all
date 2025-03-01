@@ -38,7 +38,7 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -55,21 +55,21 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _fetchApiData() async {
     try {
       // Fetch data from JSONPlaceholder
-      final jsonResponse =
-          await AppConfig.getService(AppConfig.apiUrl1).get(ApiEndpoints.getPost);
+      final jsonResponse = await AppConfig.getService(AppConfig.apiUrl1)
+          .get(ApiEndpoints.getPost);
       jsonPlaceholderData = jsonResponse['title'];
 
       // Fetch data from DummyJSON
-      final dummyResponse =
-          await AppConfig.getService(AppConfig.apiUrl2).get(ApiEndpoints.getProduct);
+      final dummyResponse = await AppConfig.getService(AppConfig.apiUrl2)
+          .get(ApiEndpoints.getProduct);
       dummyJsonData = dummyResponse['title'];
-
     } on ServerException catch (e) {
       jsonPlaceholderData = e.errorModel.message;
       dummyJsonData = e.errorModel.message;
     }
 
-    await Future.delayed(const Duration(seconds: 1)); // Simulating network delay
+    await Future.delayed(
+        const Duration(seconds: 1)); // Simulating network delay
     setState(() {
       isLoading = false;
     });
@@ -80,7 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: const Text('jh_networckservice', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        title: const Text('jh_networckservice',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.blueAccent,
         elevation: 5,
@@ -112,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             spreadRadius: 2,
           ),

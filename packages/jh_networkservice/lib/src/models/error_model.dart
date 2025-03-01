@@ -14,10 +14,10 @@ class ErrorModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['message'] = this.message;
-    data['error'] = this.error;
-    data['statusCode'] = this.statusCode;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['message'] = message;
+    data['error'] = error;
+    data['statusCode'] = statusCode;
     return data;
   }
 }

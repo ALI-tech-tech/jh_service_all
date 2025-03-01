@@ -4,16 +4,14 @@ import 'package:dio/dio.dart';
 import 'package:jh_networkservice/src/exceptions/exceptions.dart';
 import 'package:jh_networkservice/src/service_config.dart';
 
-
-class NetworkService  {
+class NetworkService {
   final NetworkConfig config;
   late Dio _dio;
 
-  NetworkService({required this.config}){
+  NetworkService({required this.config}) {
     init();
   }
 
- 
   Future<void> init() async {
     _dio = Dio(config.toBaseOptions());
 
