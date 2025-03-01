@@ -1,7 +1,9 @@
 name: jh_networkservice
-description: "A new Flutter package project."
-version: 0.0.1
-homepage:
+description: "is a Flutter package that simplifies network requests by allowing multiple base URLs and providing a configurable network service"
+version: 1.0.0
+homepage: https://github.com/ALI-tech-tech/jh_service_all/tree/main/packages/jh_networkservice
+repository: https://github.com/ALI-tech-tech/jh_service_all/tree/main/packages/jh_networkservice
+example: example/lib/main.dart
 
 environment:
   sdk: ^3.6.2
