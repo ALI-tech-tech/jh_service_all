@@ -194,5 +194,3 @@ For any questions or feedback, feel free to reach out:
 - **Author:** Ali Ben Jahlan
 - **Email:** alibenjhlan@gmail.com
 - **GitHub:** [Ali-tech-tech](https://github.com/ALI-tech-tech)
-
-```
