@@ -343,3 +343,20 @@ class _HomeScreenState extends State<HomeScreen> {
 ---
 
 This package is designed to make working with `SharedPreferences` in Flutter easier and more efficient. Enjoy using `jh_sharedprefs`! 🚀
+
+
+### Contributing
+
+Contributions are welcome! If you would like to contribute to this package, please fork the repository and submit a pull request. For significant changes, please open an issue first to discuss what you would like to change.
+
+### License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### Contact
+
+For any questions or feedback, feel free to reach out:
+
+- **Author:** Ali Ben Jahlan
+- **Email:** alibenjhlan@gmail.com
+- **GitHub:** [Ali-tech-tech](https://github.com/ALI-tech-tech)
