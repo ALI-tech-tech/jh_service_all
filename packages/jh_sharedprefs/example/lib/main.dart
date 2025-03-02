@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jh_sharedprefs/jh_sharedprefs.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPrefsService().init(); // Initialize SharedPreferences

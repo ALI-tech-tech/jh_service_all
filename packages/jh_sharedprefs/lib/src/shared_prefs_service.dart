@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class SharedPrefsService {
   static final SharedPrefsService _instance = SharedPrefsService._internal();
   SharedPreferences? _prefs;
@@ -17,7 +16,7 @@ class SharedPrefsService {
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
   }
-  
+
   /// Saves a string value.
   Future<bool> saveString(String key, String value) async {
     return await _prefs?.setString(key, value) ?? false;
