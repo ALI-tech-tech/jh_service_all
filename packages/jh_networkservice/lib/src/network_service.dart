@@ -1,90 +1,205 @@
-// lib/src/services/network_service.dart
-
 import 'package:dio/dio.dart';
-import 'package:jh_networkservice/src/exceptions/exceptions.dart';
-import 'package:jh_networkservice/src/service_config.dart';
 
+import 'exceptions/handle_dio_exceptions.dart';
+import 'service_config.dart';
+
+/// A configurable network service utilizing [Dio] to manage HTTP requests.
 class NetworkService {
+  /// The network configuration for this service.
   final NetworkConfig config;
-  late Dio _dio;
 
-  NetworkService({required this.config}) {
-    init();
-  }
+  late final Dio _dio;
 
-  Future<void> init() async {
-    _dio = Dio(config.toBaseOptions());
-
-    // Optionally, add interceptors here
-    _dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          // Modify request if needed
-          return handler.next(options);
-        },
-        onResponse: (response, handler) {
-          // Modify response if needed
-          return handler.next(response);
-        },
-        onError: (DioException e, handler) {
-          // Handle errors globally
-          return handler.next(e);
-        },
-      ),
-    );
-  }
-
-  Future<dynamic> delete(String path,
-      {data,
-      Map<String, dynamic>? queryParameters,
-      bool isFormData = false}) async {
-    try {
-      final response = await _dio.delete(path,
-          data: isFormData ? FormData.fromMap(data) : data,
-          queryParameters: queryParameters);
-      return response.data;
-    } on DioException catch (e) {
-      handleDioExceptions(e);
+  /// Creates a [NetworkService] configured with [config].
+  ///
+  /// You may optionally provide an existing [dio] instance (e.g. for testing)
+  /// and a list of [interceptors].
+  NetworkService({
+    required this.config,
+    Dio? dio,
+    List<Interceptor>? interceptors,
+  }) {
+    _dio = dio ?? Dio(config.toBaseOptions());
+    if (interceptors != null && interceptors.isNotEmpty) {
+      _dio.interceptors.addAll(interceptors);
     }
   }
 
+  /// The underlying [Dio] instance for advanced configuration.
+  Dio get dio => _dio;
+
+  /// Adds a custom interceptor to the Dio client.
+  void addInterceptor(Interceptor interceptor) {
+    _dio.interceptors.add(interceptor);
+  }
+
+  /// Retained for backward compatibility. The service is initialized on creation.
+  Future<void> init() async {}
+
+  /// Executes a GET request.
   Future<dynamic> get(
     String path, {
-    data,
+    Object? data,
     Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onReceiveProgress,
   }) async {
     try {
-      final response =
-          await _dio.get(path, data: data, queryParameters: queryParameters);
-
+      final response = await _dio.get(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: options,
+        cancelToken: cancelToken,
+        onReceiveProgress: onReceiveProgress,
+      );
       return response.data;
     } on DioException catch (e) {
       handleDioExceptions(e);
     }
   }
 
-  Future<dynamic> patch(String path,
-      {data,
-      Map<String, dynamic>? queryParameters,
-      bool isFormData = false}) async {
+  /// Executes a POST request.
+  Future<dynamic> post(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+    bool isFormData = false,
+  }) async {
     try {
-      final response = await _dio.patch(path,
-          data: isFormData ? FormData.fromMap(data) : data,
-          queryParameters: queryParameters);
+      final payload = (isFormData && data is Map<String, dynamic>)
+          ? FormData.fromMap(data)
+          : data;
+
+      final response = await _dio.post(
+        path,
+        data: payload,
+        queryParameters: queryParameters,
+        options: options,
+        cancelToken: cancelToken,
+        onSendProgress: onSendProgress,
+        onReceiveProgress: onReceiveProgress,
+      );
       return response.data;
     } on DioException catch (e) {
       handleDioExceptions(e);
     }
   }
 
-  Future<dynamic> post(String path,
-      {data,
-      Map<String, dynamic>? queryParameters,
-      bool isFormData = false}) async {
+  /// Executes a PUT request.
+  Future<dynamic> put(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+    bool isFormData = false,
+  }) async {
     try {
-      final response = await _dio.post(path,
-          data: isFormData ? FormData.fromMap(data) : data,
-          queryParameters: queryParameters);
+      final payload = (isFormData && data is Map<String, dynamic>)
+          ? FormData.fromMap(data)
+          : data;
+
+      final response = await _dio.put(
+        path,
+        data: payload,
+        queryParameters: queryParameters,
+        options: options,
+        cancelToken: cancelToken,
+        onSendProgress: onSendProgress,
+        onReceiveProgress: onReceiveProgress,
+      );
+      return response.data;
+    } on DioException catch (e) {
+      handleDioExceptions(e);
+    }
+  }
+
+  /// Executes a PATCH request.
+  Future<dynamic> patch(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+    bool isFormData = false,
+  }) async {
+    try {
+      final payload = (isFormData && data is Map<String, dynamic>)
+          ? FormData.fromMap(data)
+          : data;
+
+      final response = await _dio.patch(
+        path,
+        data: payload,
+        queryParameters: queryParameters,
+        options: options,
+        cancelToken: cancelToken,
+        onSendProgress: onSendProgress,
+        onReceiveProgress: onReceiveProgress,
+      );
+      return response.data;
+    } on DioException catch (e) {
+      handleDioExceptions(e);
+    }
+  }
+
+  /// Executes a DELETE request.
+  Future<dynamic> delete(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    bool isFormData = false,
+  }) async {
+    try {
+      final payload = (isFormData && data is Map<String, dynamic>)
+          ? FormData.fromMap(data)
+          : data;
+
+      final response = await _dio.delete(
+        path,
+        data: payload,
+        queryParameters: queryParameters,
+        options: options,
+        cancelToken: cancelToken,
+      );
+      return response.data;
+    } on DioException catch (e) {
+      handleDioExceptions(e);
+    }
+  }
+
+  /// Executes a generic HTTP request for any custom method.
+  Future<dynamic> request(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    CancelToken? cancelToken,
+    Options? options,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    try {
+      final response = await _dio.request(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        cancelToken: cancelToken,
+        options: options,
+        onSendProgress: onSendProgress,
+        onReceiveProgress: onReceiveProgress,
+      );
       return response.data;
     } on DioException catch (e) {
       handleDioExceptions(e);

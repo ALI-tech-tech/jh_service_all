@@ -1,196 +1,148 @@
-# Jh Network Service
+# jh_networkservice
 
+[![pub package](https://img.shields.io/pub/v/jh_networkservice.svg)](https://pub.dev/packages/jh_networkservice)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## Description
+A lightweight, configurable Flutter networking service powered by [Dio](https://pub.dev/packages/dio). Designed to handle multiple base URLs, structured error parsing, request cancellation, and interceptors with ease.
 
-`jh_networkservice` is a Flutter package that simplifies network requests by allowing multiple base URLs and providing a configurable network service. It utilizes the [Dio](https://pub.dev/packages/dio) HTTP client to handle requests and responses efficiently.
+---
 
 ## Features
 
-- **Multiple Base URLs:** Configure different base URLs for various services.
-- **Easy to Use API:** Simple methods for GET, POST, PATCH, and DELETE requests.
-- **Error Handling:** Built-in error handling for network exceptions.
-- **Custom Configuration:** Flexible configuration options tailored to your needs.
-- **Animated UI:** Sample implementation with a clear user interface.
+- **Multiple Base URLs:** Manage multiple API base URLs with separate configurations cleanly.
+- **Complete HTTP Verbs:** Straightforward `get`, `post`, `put`, `patch`, `delete`, and generic `request` methods.
+- **Robust Error Handling:** Automatically maps [DioException] to domain [ServerException] containing a structured [ErrorModel].
+- **Flexible Configuration:** Set timeouts, default headers, response types, redirect rules, and query parameters via [NetworkConfig].
+- **Full Dio Power:** Access the underlying Dio client, inject custom interceptors, use cancel tokens, and listen to progress callbacks.
 
-## Getting Started
+---
 
-### Installation
+## Installation
 
-Add the following dependency to your `pubspec.yaml` file:
+Add `jh_networkservice` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  jh_networkservice: ^latest_version
+  jh_networkservice: ^1.0.0
 ```
 
-Then, run the following command to install the package:
+Then install dependencies:
 
 ```bash
 flutter pub get
 ```
 
-### Usage
+---
 
-Below is a basic example of how to utilize the `jh_networkservice` package in your Flutter app.
+## Quick Start
+
+### 1. Configure Services for Multiple Base URLs
 
 ```dart
-import 'package:flutter/material.dart';
 import 'package:jh_networkservice/jh_networkservice.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+class ApiService {
+  static final mainService = NetworkService(
+    config: NetworkConfig(
+      baseUrl: 'https://api.example.com',
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 5),
+      defaultHeaders: {'Authorization': 'Bearer YOUR_TOKEN'},
+    ),
+  );
 
-// App Configuration with Multiple Base URLs
-class AppConfig {
-  static const String apiUrl1 = "https://jsonplaceholder.typicode.com";
-  static const String apiUrl2 = "https://dummyjson.com";
-
-  static NetworkService getService(String baseUrl) {
-    return NetworkService(config: NetworkConfig(baseUrl: baseUrl));
-  }
-}
-
-// API Endpoints
-class ApiEndpoints {
-  static const String getPost = "/posts/1"; // JSONPlaceholder
-  static const String getProduct = "/products/1"; // DummyJSON
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  String? jsonPlaceholderData;
-  String? dummyJsonData;
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchApiData();
-  }
-
-  Future<void> _fetchApiData() async {
-    try {
-      // Fetch data from JSONPlaceholder
-      final jsonResponse =
-          await AppConfig.getService(AppConfig.apiUrl1).get(ApiEndpoints.getPost);
-      jsonPlaceholderData = jsonResponse['title'];
-
-      // Fetch data from DummyJSON
-      final dummyResponse =
-          await AppConfig.getService(AppConfig.apiUrl2).get(ApiEndpoints.getProduct);
-      dummyJsonData = dummyResponse['title'];
-    } on ServerException catch (e) {
-      jsonPlaceholderData = e.errorModel.message;
-      dummyJsonData = e.errorModel.message;
-    }
-
-    await Future.delayed(const Duration(seconds: 1)); // Simulating network delay
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[200],
-      appBar: AppBar(
-        title: const Text('Multi-BaseURL Example', style: TextStyle(fontWeight: FontWeight.bold)),
-        centerTitle: true,
-        backgroundColor: Colors.blueAccent,
-        elevation: 5,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildCard("JSONPlaceholder Data", jsonPlaceholderData),
-              const SizedBox(height: 20),
-              _buildCard("DummyJSON Data", dummyJsonData),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCard(String title, String? data) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-      padding: const EdgeInsets.all(15),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, spreadRadius: 2),
-        ],
-      ),
-      child: Column(
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          isLoading
-              ? const CircularProgressIndicator(color: Colors.blueAccent)
-              : Text(data ?? "No data available", textAlign: TextAlign.center, style: const TextStyle(fontSize: 16, color: Colors.black87)),
-        ],
-      ),
-    );
-  }
+  static final paymentService = NetworkService(
+    config: NetworkConfig(
+      baseUrl: 'https://payments.example.com',
+      connectTimeout: const Duration(seconds: 15),
+    ),
+  );
 }
 ```
 
-### API Reference
+### 2. Perform Network Requests
 
-Refer to the following classes and methods for more details on how to use the API of your network service:
+```dart
+// GET Request
+try {
+  final data = await ApiService.mainService.get('/users/1');
+  print('User: $data');
+} on ServerException catch (e) {
+  print('Failed with status: ${e.errorModel.statusCode}');
+  print('Message: ${e.errorModel.message}');
+}
 
-- **NetworkService**
-  - `get(path)`: Perform a GET request.
-  - `post(path, {data})`: Perform a POST request.
-  - `patch(path, {data})`: Perform a PATCH request.
-  - `delete(path)`: Perform a DELETE request.
+// POST Request
+final createdUser = await ApiService.mainService.post(
+  '/users',
+  data: {'name': 'John Doe', 'email': 'john@example.com'},
+);
 
-- **NetworkConfig**
-  - Used to setup configuration for the `NetworkService`.
+// PUT Request
+final updatedUser = await ApiService.mainService.put(
+  '/users/1',
+  data: {'name': 'Jane Doe'},
+);
 
-### Contributing
+// DELETE Request
+await ApiService.mainService.delete('/users/1');
+```
 
-Contributions are welcome! If you would like to contribute to this package, please fork the repository and submit a pull request. For significant changes, please open an issue first to discuss what you would like to change.
+### 3. Error Handling
 
-### License
+All network failures are wrapped in a [ServerException]:
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```dart
+try {
+  await ApiService.mainService.get('/profile');
+} on ServerException catch (e) {
+  final ErrorModel error = e.errorModel;
+  print('Status Code: ${error.statusCode}');
+  print('User Message: ${error.message}');
+  print('Technical Details: ${error.error}');
+  print('Raw Response Data: ${error.rawData}');
+}
+```
 
-### Contact
+### 4. Custom Interceptors & Cancellation
 
-For any questions or feedback, feel free to reach out:
+```dart
+import 'package:dio/dio.dart';
+
+final service = NetworkService(
+  config: NetworkConfig(baseUrl: 'https://api.example.com'),
+);
+
+// Add logging or auth refresh interceptors
+service.addInterceptor(LogInterceptor(responseBody: true));
+
+// Cancel requests when a widget disposes
+final cancelToken = CancelToken();
+final response = await service.get('/search', cancelToken: cancelToken);
+
+// Cancel anytime:
+cancelToken.cancel('User navigated away');
+```
+
+---
+
+## API Summary
+
+| Class | Description |
+|---|---|
+| `NetworkConfig` | Configuration settings (base URL, timeouts, headers, redirects). |
+| `NetworkService` | Client providing `get`, `post`, `put`, `patch`, `delete`, and `request`. |
+| `ServerException` | Standard exception thrown on failure. |
+| `ErrorModel` | Parsed error structure (`message`, `error`, `statusCode`, `rawData`). |
+
+---
+
+## License
+
+This package is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+## Author
 
 - **Author:** Ali Ben Jahlan
 - **Email:** alibenjhlan@gmail.com
-- **GitHub:** [Ali-tech-tech](https://github.com/ALI-tech-tech)
+- **GitHub:** [ALI-tech-tech](https://github.com/ALI-tech-tech)

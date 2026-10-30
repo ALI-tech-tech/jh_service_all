@@ -1,238 +1,48 @@
-# `jh_sharedprefs` Package Documentation
+# jh_sharedprefs
 
-The `jh_sharedprefs` package is a utility for managing persistent storage in Flutter applications using the `shared_preferences` package. It provides a simple and efficient way to store, retrieve, update, and delete data in key-value pairs. This package is designed to simplify working with `SharedPreferences` by offering a clean and intuitive API.
+[![pub package](https://img.shields.io/pub/v/jh_sharedprefs.svg)](https://pub.dev/packages/jh_sharedprefs)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+A comprehensive, developer-friendly persistent storage wrapper for Flutter applications powered by [shared_preferences](https://pub.dev/packages/shared_preferences).
+
+It simplifies data persistence with out-of-the-box support for primitive types, `DateTime`, structured `JSON` maps, list manipulations, atomic numeric helpers, and bulk operations.
 
 ---
 
-## Table of Contents
+## Features
 
-1. [Installation](#installation)
-2. [Usage](#usage)
-   - [Initialization](#initialization)
-   - [Saving Data](#saving-data)
-   - [Retrieving Data](#retrieving-data)
-   - [Updating Data](#updating-data)
-   - [Deleting Data](#deleting-data)
-   - [Advanced Features](#advanced-features)
-3. [API Reference](#api-reference)
-4. [Example](#example)
-5. [License](#license)
+- **All Standard Primitives:** Read and write `String`, `int`, `double`, `bool`, and `List<String>`.
+- **Extended Types:** Seamlessly store and retrieve ISO-8601 `DateTime` objects and complex `Map<String, dynamic>` JSON structures.
+- **Convenient Number & Bool Helpers:** `incrementOrInitInt`, `decrementInt`, `toggleBool`, and `batchIncrementInts`.
+- **List Operations:** Easily add, remove, or append unique entries to string lists without worrying about immutable list restrictions.
+- **Bulk & Batch Utilities:** `saveBulk`, `getBulk`, `removeBulk`, `resetToDefaults`, and atomic `retrieveAndRemove`.
+- **Inspect & Query:** `getKeysByPrefix`, `getItemCount`, and `getAll`.
+- **Test-Friendly:** Inject mock or custom `SharedPreferences` instances via `initWithInstance` for unit testing.
 
 ---
 
 ## Installation
 
-Add the `jh_sharedprefs` package to your `pubspec.yaml` file:
+Add `jh_sharedprefs` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter:
-    sdk: flutter
   jh_sharedprefs: ^1.0.0
 ```
 
-Then, run `flutter pub get` to install the package.
+Then install dependencies:
 
----
-
-## Usage
-
-### Initialization
-
-Before using the `jh_sharedprefs` package, you must initialize it. This is typically done in the `main` function or in the `initState` of your main widget.
-
-```dart
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await SharedPrefsService().init(); // Initialize SharedPreferences
-  runApp(MyApp());
-}
+```bash
+flutter pub get
 ```
 
 ---
 
-### Saving Data
+## Quick Start
 
-You can save various types of data using the following methods:
+### 1. Initialization
 
-- **String**: `saveString`
-- **Integer**: `saveInt`
-- **Double**: `saveDouble`
-- **Boolean**: `saveBool`
-- **String List**: `saveStringList`
-- **DateTime**: `saveDateTime`
-- **JSON Object**: `saveJson`
-
-Example:
-
-```dart
-await SharedPrefsService().saveString('myStringKey', 'Hello, World!');
-await SharedPrefsService().saveInt('myIntKey', 42);
-await SharedPrefsService().saveBool('myBoolKey', true);
-await SharedPrefsService().saveStringList('myStringListKey', ['apple', 'banana']);
-await SharedPrefsService().saveJson('myJsonKey', {'name': 'John', 'age': 30});
-```
-
----
-
-### Retrieving Data
-
-You can retrieve stored data using the following methods:
-
-- **String**: `getString`
-- **Integer**: `getInt`
-- **Double**: `getDouble`
-- **Boolean**: `getBool`
-- **String List**: `getStringList`
-- **DateTime**: `getDateTime`
-- **JSON Object**: `getJson`
-
-Example:
-
-```dart
-String? myString = SharedPrefsService().getString('myStringKey');
-int? myInt = SharedPrefsService().getInt('myIntKey');
-bool? myBool = SharedPrefsService().getBool('myBoolKey');
-List<String>? myList = SharedPrefsService().getStringList('myStringListKey');
-Map<String, dynamic>? myJson = SharedPrefsService().getJson('myJsonKey');
-```
-
----
-
-### Updating Data
-
-You can update existing data or append new data using the following methods:
-
-- **Update or Append to String List**: `updateOrAppendToStringList`
-- **Increment Integer**: `incrementOrInitInt`
-- **Decrement Integer**: `decrementInt`
-- **Toggle Boolean**: `toggleBool`
-- **Add to String List**: `addToStringList`
-- **Remove from String List**: `removeFromStringList`
-
-Example:
-
-```dart
-await SharedPrefsService().updateOrAppendToStringList('myStringListKey', ['orange']);
-await SharedPrefsService().incrementOrInitInt('myIntKey', incrementBy: 5);
-await SharedPrefsService().toggleBool('myBoolKey');
-await SharedPrefsService().addToStringList('myStringListKey', 'grape');
-await SharedPrefsService().removeFromStringList('myStringListKey', 'banana');
-```
-
----
-
-### Deleting Data
-
-You can delete data using the following methods:
-
-- **Remove a Key**: `remove`
-- **Remove Multiple Keys**: `removeBulk`
-- **Clear All Data**: `clear`
-
-Example:
-
-```dart
-await SharedPrefsService().remove('myStringKey');
-await SharedPrefsService().removeBulk(['myIntKey', 'myBoolKey']);
-await SharedPrefsService().clear();
-```
-
----
-
-### Advanced Features
-
-- **Bulk Operations**: Save, retrieve, or remove multiple key-value pairs at once.
-- **Reset to Defaults**: Reset keys to specified default values.
-- **Retrieve All Keys**: Get all stored keys or keys with a specific prefix.
-- **Batch Increment Integers**: Increment multiple integer values in one go.
-- **Retrieve and Remove**: Retrieve values and remove the keys afterward.
-
-Example:
-
-```dart
-await SharedPrefsService().saveBulk({
-  'key1': 'value1',
-  'key2': 123,
-  'key3': true,
-});
-
-Map<String, dynamic> bulkData = SharedPrefsService().getBulk(['key1', 'key2', 'key3']);
-
-await SharedPrefsService().resetToDefaults({
-  'key1': 'defaultValue',
-  'key2': 0,
-});
-
-Set<String> keysWithPrefix = SharedPrefsService().getKeysByPrefix('key');
-
-await SharedPrefsService().batchIncrementInts({
-  'counter1': 1,
-  'counter2': 2,
-});
-
-Map<String, dynamic> retrievedData = SharedPrefsService().retrieveAndRemove(['key1', 'key2']);
-```
-
----
-
-## API Reference
-
-### Methods
-
-| Method Name                     | Description                                                                 |
-|---------------------------------|-----------------------------------------------------------------------------|
-| `init()`                        | Initializes the SharedPreferences instance.                                 |
-| `saveString(key, value)`        | Saves a string value.                                                       |
-| `getString(key)`                | Retrieves a string value.                                                   |
-| `saveDateTime(key, value)`      | Saves a DateTime value as a string.                                         |
-| `getDateTime(key)`              | Retrieves a DateTime value.                                                 |
-| `updateOrAppendToStringList(key, newList)` | Updates or appends to a string list.                                |
-| `saveBulk(data)`                | Saves multiple key-value pairs.                                             |
-| `getBulk(keys)`                 | Retrieves multiple values for a list of keys.                               |
-| `removeBulk(keys)`              | Removes multiple keys.                                                      |
-| `incrementOrInitInt(key, {incrementBy, initialValue})` | Increments or initializes an integer value.                 |
-| `decrementInt(key, {decrementBy})` | Decrements an integer value.                                           |
-| `toggleBool(key)`               | Toggles a boolean value.                                                    |
-| `addToStringList(key, value)`   | Adds a single item to a string list.                                        |
-| `removeFromStringList(key, value)` | Removes a single item from a string list.                                |
-| `getAll()`                      | Retrieves all key-value pairs.                                              |
-| `saveJson(key, json)`           | Saves a JSON object as a string.                                            |
-| `getJson(key)`                  | Retrieves a JSON object.                                                    |
-| `resetToDefaults(defaultValues)`| Resets keys to specified default values.                                    |
-| `getKeysByPrefix(prefix)`       | Retrieves all keys that start with a specified prefix.                      |
-| `getItemCount()`                | Returns the number of stored items.                                         |
-| `batchIncrementInts(increments)`| Increments multiple integer values.                                         |
-| `retrieveAndRemove(keys)`       | Retrieves and removes values for a list of keys.                            |
-| `getValue<T>(key)`              | Retrieves a value by type.                                                  |
-| `getKeys()`                     | Retrieves all keys.                                                         |
-| `clear()`                       | Clears all stored data.                                                     |
-| `saveInt(key, value)`           | Saves an integer value.                                                     |
-| `getInt(key)`                   | Retrieves an integer value.                                                 |
-| `saveDouble(key, value)`        | Saves a double value.                                                       |
-| `getDouble(key)`                | Retrieves a double value.                                                   |
-| `saveBool(key, value)`          | Saves a boolean value.                                                      |
-| `getBool(key)`                  | Retrieves a boolean value.                                                  |
-| `saveStringList(key, value)`    | Saves a list of strings.                                                    |
-| `getStringList(key)`            | Retrieves a list of strings.                                                |
-| `containsKey(key)`              | Checks if a key exists.                                                     |
-| `remove(key)`                   | Removes a value for a specific key.                                         |
-
----
-
-## Example
-
-For a complete example, refer to the [Full Example Code](#full-example-code) provided in the documentation.
-
----
-
-## License
-
-This package is open-source and available under the MIT License.
-
----
-
-## Full Example Code
+Initialize the service before running your app (typically inside `main`):
 
 ```dart
 import 'package:flutter/material.dart';
@@ -240,123 +50,170 @@ import 'package:jh_sharedprefs/jh_sharedprefs.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SharedPrefsService().init(); // Initialize SharedPreferences
-  runApp(MyApp());
+  await SharedPrefsService().init();
+  runApp(const MyApp());
 }
+```
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'jh_sharedprefs Example',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: HomeScreen(),
-    );
-  }
-}
+### 2. Basic Storage
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
+```dart
+final prefs = SharedPrefsService();
 
-class _HomeScreenState extends State<HomeScreen> {
-  final SharedPrefsService _prefsService = SharedPrefsService();
-  String? _storedString;
-  int? _storedInt;
-  DateTime? _storedDateTime;
-  bool? _storedBool;
-  List<String>? _storedStringList;
-  Map<String, dynamic>? _storedJson;
+// Save data
+await prefs.saveString('username', 'Ali');
+await prefs.saveInt('score', 100);
+await prefs.saveDouble('rating', 4.9);
+await prefs.saveBool('isDarkMode', true);
+await prefs.saveStringList('tags', ['flutter', 'dart']);
 
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
-  }
+// Retrieve data
+String? username = prefs.getString('username');
+int? score = prefs.getInt('score');
+bool? isDarkMode = prefs.getBool('isDarkMode');
+```
 
-  // Load data from SharedPreferences
-  Future<void> _loadData() async {
-    setState(() {
-      _storedString = _prefsService.getString('myStringKey');
-      _storedInt = _prefsService.getInt('myIntKey');
-      _storedDateTime = _prefsService.getDateTime('myDateTimeKey');
-      _storedBool = _prefsService.getBool('myBoolKey');
-      _storedStringList = _prefsService.getStringList('myStringListKey');
-      _storedJson = _prefsService.getJson('myJsonKey');
-    });
-  }
+### 3. Storing DateTime & JSON
 
-  // Save data to SharedPreferences
-  Future<void> _saveData() async {
-    await _prefsService.saveString('myStringKey', 'Hello, World!');
-    await _prefsService.saveInt('myIntKey', 42);
-    await _prefsService.saveDateTime('myDateTimeKey', DateTime.now());
-    await _prefsService.saveBool('myBoolKey', true);
-    await _prefsService.saveStringList('myStringListKey', ['apple', 'banana']);
-    await _prefsService.saveJson('myJsonKey', {'name': 'John', 'age': 30});
-    _loadData();
-  }
+```dart
+// DateTime
+await prefs.saveDateTime('lastLogin', DateTime.now());
+DateTime? lastLogin = prefs.getDateTime('lastLogin');
 
-  // Clear all data from SharedPreferences
-  Future<void> _clearData() async {
-    await _prefsService.clear();
-    _loadData();
-  }
+// JSON Map
+await prefs.saveJson('userProfile', {
+  'id': 123,
+  'name': 'Ali Ben Jahlan',
+  'roles': ['admin', 'developer'],
+});
+Map<String, dynamic>? profile = prefs.getJson('userProfile');
+```
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('jh_sharedprefs Example'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text('Stored String: $_storedString'),
-            Text('Stored Int: $_storedInt'),
-            Text('Stored DateTime: $_storedDateTime'),
-            Text('Stored Bool: $_storedBool'),
-            Text('Stored String List: ${_storedStringList?.join(', ')}'),
-            Text('Stored JSON: $_storedJson'),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _saveData,
-              child: Text('Save Data'),
-            ),
-            ElevatedButton(
-              onPressed: _clearData,
-              child: Text('Clear Data'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+### 4. Numeric & Boolean Helpers
+
+```dart
+// Increment integer by 1 (or initialize to 0 + 1)
+int newScore = await prefs.incrementOrInitInt('score');
+
+// Decrement integer
+int remaining = await prefs.decrementInt('attempts', decrementBy: 1);
+
+// Toggle boolean
+bool isEnabled = await prefs.toggleBool('notificationsEnabled');
+
+// Batch increment counters
+await prefs.batchIncrementInts({
+  'pageViews': 1,
+  'clicks': 5,
+});
+```
+
+### 5. String List Manipulation
+
+```dart
+// Add a single unique item
+await prefs.addToStringList('tags', 'mobile');
+
+// Remove an item
+await prefs.removeFromStringList('tags', 'dart');
+
+// Append multiple items uniquely
+await prefs.updateOrAppendToStringList('tags', ['android', 'ios']);
+```
+
+### 6. Bulk Operations & Queries
+
+```dart
+// Save multiple items at once
+await prefs.saveBulk({
+  'theme': 'dark',
+  'fontSize': 14,
+  'autoSave': true,
+});
+
+// Retrieve multiple items
+Map<String, dynamic> settings = prefs.getBulk(['theme', 'fontSize']);
+
+// Retrieve and remove keys
+Map<String, dynamic> sessionData = await prefs.retrieveAndRemove(['token', 'tempId']);
+
+// Query keys by prefix
+Set<String> authKeys = prefs.getKeysByPrefix('auth_');
+```
+
+---
+
+## Testing
+
+For unit testing, you can initialize the service with mock data using `initWithInstance`:
+
+```dart
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jh_sharedprefs/jh_sharedprefs.dart';
+
+void main() {
+  test('unit test with mocked SharedPreferences', () async {
+    SharedPreferences.setMockInitialValues({'username': 'TestUser'});
+    final mockPrefs = await SharedPreferences.getInstance();
+    
+    SharedPrefsService().initWithInstance(mockPrefs);
+
+    expect(SharedPrefsService().getString('username'), 'TestUser');
+  });
 }
 ```
 
 ---
 
-This package is designed to make working with `SharedPreferences` in Flutter easier and more efficient. Enjoy using `jh_sharedprefs`! 🚀
+## API Summary
 
+| Method | Return Type | Description |
+|---|---|---|
+| `init()` | `Future<void>` | Initializes the default `SharedPreferences` instance. |
+| `initWithInstance(prefs)` | `void` | Injects a custom `SharedPreferences` instance. |
+| `reload()` | `Future<void>` | Reloads cached preferences from disk. |
+| `saveString(key, val)` | `Future<bool>` | Saves a string. |
+| `getString(key)` | `String?` | Retrieves a string. |
+| `saveInt(key, val)` | `Future<bool>` | Saves an int. |
+| `getInt(key)` | `int?` | Retrieves an int. |
+| `saveDouble(key, val)` | `Future<bool>` | Saves a double. |
+| `getDouble(key)` | `double?` | Retrieves a double. |
+| `saveBool(key, val)` | `Future<bool>` | Saves a bool. |
+| `getBool(key)` | `bool?` | Retrieves a bool. |
+| `saveStringList(key, val)` | `Future<bool>` | Saves a list of strings. |
+| `getStringList(key)` | `List<String>?` | Retrieves a list of strings. |
+| `saveDateTime(key, val)` | `Future<bool>` | Saves an ISO-8601 DateTime. |
+| `getDateTime(key)` | `DateTime?` | Retrieves a DateTime. |
+| `saveJson(key, map)` | `Future<bool>` | Saves a JSON map. |
+| `getJson(key)` | `Map<String, dynamic>?` | Retrieves and decodes a JSON map. |
+| `incrementOrInitInt(key)` | `Future<int>` | Increments or initializes an integer. |
+| `decrementInt(key)` | `Future<int>` | Decrements an integer. |
+| `toggleBool(key)` | `Future<bool>` | Toggles a boolean. |
+| `addToStringList(key, val)` | `Future<bool>` | Appends a unique item to string list. |
+| `removeFromStringList(key, val)` | `Future<bool>` | Removes an item from string list. |
+| `updateOrAppendToStringList(key, list)` | `Future<bool>` | Merges unique items into string list. |
+| `saveBulk(map)` | `Future<void>` | Saves multiple key-value pairs. |
+| `getBulk(keys)` | `Map<String, dynamic>` | Retrieves values for multiple keys. |
+| `removeBulk(keys)` | `Future<void>` | Removes multiple keys. |
+| `retrieveAndRemove(keys)` | `Future<Map<String, dynamic>>` | Retrieves values and deletes their keys. |
+| `resetToDefaults(map)` | `Future<void>` | Sets keys to provided default values. |
+| `getAll()` | `Map<String, dynamic>` | Returns all stored key-value pairs. |
+| `getKeys()` | `Set<String>` | Returns all stored keys. |
+| `getKeysByPrefix(prefix)` | `Set<String>` | Returns all keys starting with prefix. |
+| `getItemCount()` | `int` | Returns count of stored keys. |
+| `containsKey(key)` | `bool` | Checks if a key exists. |
+| `remove(key)` | `Future<bool>` | Removes a key. |
+| `clear()` | `Future<bool>` | Clears all stored data. |
 
-### Contributing
+---
 
-Contributions are welcome! If you would like to contribute to this package, please fork the repository and submit a pull request. For significant changes, please open an issue first to discuss what you would like to change.
-
-### License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### Contact
-
-For any questions or feedback, feel free to reach out:
+## Author
 
 - **Author:** Ali Ben Jahlan
 - **Email:** alibenjhlan@gmail.com
-- **GitHub:** [Ali-tech-tech](https://github.com/ALI-tech-tech)
+- **GitHub:** [ALI-tech-tech](https://github.com/ALI-tech-tech)

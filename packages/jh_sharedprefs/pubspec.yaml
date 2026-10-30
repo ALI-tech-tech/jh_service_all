@@ -1,13 +1,20 @@
 name: jh_sharedprefs
-description: "The `jh_sharedprefs` package is a utility for managing persistent storage in Flutter applications using the `shared_preferences` package. It provides a simple and efficient way to store, retrieve, update, and delete data in key-value pairs"
+description: A powerful and easy-to-use persistent storage wrapper for Flutter built on shared_preferences with bulk operations and JSON support.
 version: 1.0.0
 homepage: https://github.com/ALI-tech-tech/jh_service_all/tree/main/packages/jh_sharedprefs
 repository: https://github.com/ALI-tech-tech/jh_service_all/tree/main/packages/jh_sharedprefs
-example: example/lib/main.dart
+issue_tracker: https://github.com/ALI-tech-tech/jh_service_all/issues
+
+topics:
+  - shared-preferences
+  - storage
+  - cache
+  - persistence
+  - key-value
 
 environment:
   sdk: ^3.6.2
-  flutter: ">=1.17.0"
+  flutter: ">=3.3.0"
 
 dependencies:
   flutter:
@@ -18,6 +25,5 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
-
 
 flutter:

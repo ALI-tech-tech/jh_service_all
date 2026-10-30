@@ -3,8 +3,8 @@ import 'package:jh_sharedprefs/jh_sharedprefs.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SharedPrefsService().init(); // Initialize SharedPreferences
-  runApp(MyApp());
+  await SharedPrefsService().init();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -13,11 +13,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SharedPreferences Example',
+      debugShowCheckedModeBanner: false,
+      title: 'jh_sharedprefs Example',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
       ),
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }
@@ -44,8 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadData();
   }
 
-  // Load data from SharedPreferences
-  Future<void> _loadData() async {
+  void _loadData() {
     setState(() {
       _storedString = _prefsService.getString('myStringKey');
       _storedInt = _prefsService.getInt('myIntKey');
@@ -56,7 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // Save data to SharedPreferences
   Future<void> _saveData() async {
     await _prefsService.saveString('myStringKey', 'Hello, World!');
     await _prefsService.saveInt('myIntKey', 42);
@@ -67,25 +67,21 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadData();
   }
 
-  // Clear all data from SharedPreferences
   Future<void> _clearData() async {
     await _prefsService.clear();
     _loadData();
   }
 
-  // Toggle a boolean value
   Future<void> _toggleBool() async {
     await _prefsService.toggleBool('myBoolKey');
     _loadData();
   }
 
-  // Add an item to a string list
   Future<void> _addToStringList() async {
     await _prefsService.addToStringList('myStringListKey', 'orange');
     _loadData();
   }
 
-  // Remove an item from a string list
   Future<void> _removeFromStringList() async {
     await _prefsService.removeFromStringList('myStringListKey', 'banana');
     _loadData();
@@ -95,39 +91,66 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('SharedPreferences Example'),
+        title: const Text('jh_sharedprefs Example'),
+        centerTitle: true,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Text('Stored String: $_storedString'),
-            Text('Stored Int: $_storedInt'),
-            Text('Stored DateTime: $_storedDateTime'),
-            Text('Stored Bool: $_storedBool'),
-            Text('Stored String List: ${_storedStringList?.join(', ')}'),
-            Text('Stored JSON: $_storedJson'),
-            SizedBox(height: 20),
-            ElevatedButton(
+            Card(
+              elevation: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Stored String: ${_storedString ?? "none"}'),
+                    const SizedBox(height: 8),
+                    Text('Stored Int: ${_storedInt ?? "none"}'),
+                    const SizedBox(height: 8),
+                    Text('Stored DateTime: ${_storedDateTime ?? "none"}'),
+                    const SizedBox(height: 8),
+                    Text('Stored Bool: ${_storedBool ?? "none"}'),
+                    const SizedBox(height: 8),
+                    Text(
+                        'Stored List: ${_storedStringList?.join(", ") ?? "none"}'),
+                    const SizedBox(height: 8),
+                    Text('Stored JSON: ${_storedJson ?? "none"}'),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.save),
               onPressed: _saveData,
-              child: Text('Save Data'),
+              label: const Text('Save Sample Data'),
             ),
-            ElevatedButton(
-              onPressed: _clearData,
-              child: Text('Clear Data'),
-            ),
-            ElevatedButton(
+            const SizedBox(height: 8),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.toggle_on),
               onPressed: _toggleBool,
-              child: Text('Toggle Bool'),
+              label: const Text('Toggle Bool'),
             ),
-            ElevatedButton(
+            const SizedBox(height: 8),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.add),
               onPressed: _addToStringList,
-              child: Text('Add to String List'),
+              label: const Text('Add "orange" to List'),
             ),
-            ElevatedButton(
+            const SizedBox(height: 8),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.remove),
               onPressed: _removeFromStringList,
-              child: Text('Remove from String List'),
+              label: const Text('Remove "banana" from List'),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.delete_outline),
+              onPressed: _clearData,
+              label: const Text('Clear All Data'),
             ),
           ],
         ),
