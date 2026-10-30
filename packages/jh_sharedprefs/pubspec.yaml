@@ -1,6 +1,6 @@
 name: jh_sharedprefs
 description: A powerful and easy-to-use persistent storage wrapper for Flutter built on shared_preferences with bulk operations and JSON support.
-version: 1.0.0
+version: 1.1.0
 homepage: https://github.com/ALI-tech-tech/jh_service_all/tree/main/packages/jh_sharedprefs
 repository: https://github.com/ALI-tech-tech/jh_service_all/tree/main/packages/jh_sharedprefs
 issue_tracker: https://github.com/ALI-tech-tech/jh_service_all/issues

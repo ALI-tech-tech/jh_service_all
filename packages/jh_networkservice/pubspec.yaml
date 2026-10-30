@@ -1,6 +1,6 @@
 name: jh_networkservice
 description: A configurable, multi-base-URL network service for Flutter built on Dio with structured error handling and interceptor support.
-version: 1.0.0
+version: 1.1.0
 homepage: https://github.com/ALI-tech-tech/jh_service_all/tree/main/packages/jh_networkservice
 repository: https://github.com/ALI-tech-tech/jh_service_all/tree/main/packages/jh_networkservice
 issue_tracker: https://github.com/ALI-tech-tech/jh_service_all/issues

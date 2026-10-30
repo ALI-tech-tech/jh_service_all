@@ -10,8 +10,8 @@ A collection of essential, high-quality Flutter utility packages maintained by [
 
 | Package | Version | Description | pub.dev |
 |---|---|---|---|
-| [`jh_networkservice`](packages/jh_networkservice) | `1.0.0` | Configurable multi-base-URL network service built on Dio with structured exception handling. | [![pub package](https://img.shields.io/pub/v/jh_networkservice.svg)](https://pub.dev/packages/jh_networkservice) |
-| [`jh_sharedprefs`](packages/jh_sharedprefs) | `1.0.0` | Comprehensive persistent storage wrapper for SharedPreferences with JSON, DateTime, and bulk operations. | [![pub package](https://img.shields.io/pub/v/jh_sharedprefs.svg)](https://pub.dev/packages/jh_sharedprefs) |
+| [`jh_networkservice`](packages/jh_networkservice) | `1.1.0` | Configurable multi-base-URL network service built on Dio with structured exception handling. | [![pub package](https://img.shields.io/pub/v/jh_networkservice.svg)](https://pub.dev/packages/jh_networkservice) |
+| [`jh_sharedprefs`](packages/jh_sharedprefs) | `1.1.0` | Comprehensive persistent storage wrapper for SharedPreferences with JSON, DateTime, and bulk operations. | [![pub package](https://img.shields.io/pub/v/jh_sharedprefs.svg)](https://pub.dev/packages/jh_sharedprefs) |
 
 ---
 
